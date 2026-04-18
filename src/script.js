@@ -25,7 +25,7 @@ function initGame() {
         card.innerText = symbol;
         card.addEventListener('click', flipCard);
         board.appendChild(card);
-    });
+    };
 
     // 10 giây ghi nhớ
     setTimeout(() => {
