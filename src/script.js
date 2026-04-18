@@ -4,7 +4,7 @@ const wrongDisplay = document.getElementById('wrong-count');
 let flippedCards = [];
 let matchedCount = 0;
 let isPreviewing = true;
-let timeLeft = 120; // Tăng lên 120 giây
+let timeLeft = 120; // Tổng thời gian 120 giây
 let gameInterval;
 let wrongConsecutive = 0; // Đếm số lần sai liên tiếp
 
@@ -13,7 +13,7 @@ const symbols = [...icons, ...icons];
 
 function initGame() {
     clearInterval(gameInterval);
-    board.innerHTML = '';
+    board.innerHTML = ''; 
     flippedCards = [];
     matchedCount = 0;
     isPreviewing = true;
@@ -21,8 +21,9 @@ function initGame() {
     wrongConsecutive = 0;
     
     updateDisplay();
+
+    // Xáo trộn và tạo các ô hình
     symbols.sort(() => Math.random() - 0.5);
-    
     symbols.forEach((symbol) => {
         const card = document.createElement('div');
         card.classList.add('card', 'flipped');
@@ -32,6 +33,7 @@ function initGame() {
         board.appendChild(card);
     });
 
+    // 10 giây xem trước trước khi bắt đầu
     setTimeout(() => {
         document.querySelectorAll('.card').forEach(card => card.classList.remove('flipped'));
         isPreviewing = false;
@@ -40,9 +42,8 @@ function initGame() {
 }
 
 function updateDisplay() {
-    timerDisplay.innerText = `Thời gian: ${timeLeft}s`;
-    wrongDisplay.innerText = `Sai liên tiếp: ${wrongConsecutive}/5`;
-    timerDisplay.style.color = timeLeft <= 20 ? '#e74c3c' : '#f1c40f';
+    if(timerDisplay) timerDisplay.innerText = `Thời gian: ${timeLeft}s`;
+    if(wrongDisplay) wrongDisplay.innerText = `Sai liên tiếp: ${wrongConsecutive}/5`;
 }
 
 function startCountdown() {
@@ -51,7 +52,7 @@ function startCountdown() {
         updateDisplay();
         if (timeLeft <= 0) {
             clearInterval(gameInterval);
-            alert("HẾT GIỜ! Bạn đã thất bại.");
+            alert("HẾT GIỜ! Bạn đã thua cuộc.");
             resetGame();
         }
     }, 1000);
@@ -59,7 +60,6 @@ function startCountdown() {
 
 function flipCard() {
     if (isPreviewing || timeLeft <= 0 || flippedCards.length >= 2 || this.classList.contains('flipped')) return;
-    
     this.classList.add('flipped');
     flippedCards.push(this);
     if (flippedCards.length === 2) checkMatch();
@@ -68,27 +68,26 @@ function flipCard() {
 function checkMatch() {
     const [card1, card2] = flippedCards;
     if (card1.dataset.symbol === card2.dataset.symbol) {
-        // ĐÚNG: Reset số lần sai liên tiếp về 0
         card1.classList.add('matched');
         card2.classList.add('matched');
         matchedCount += 2;
-        wrongConsecutive = 0; 
+        wrongConsecutive = 0; // Đúng thì reset đếm sai liên tiếp
         flippedCards = [];
         updateDisplay();
-        
         if (matchedCount === 36) {
             clearInterval(gameInterval);
-            setTimeout(() => alert(`XUẤT SẮC! Bạn thắng khi còn ${timeLeft}s`), 500);
+            setTimeout(() => alert(`CHIẾN THẮNG! Bạn còn dư ${timeLeft}s`), 500);
         }
     } else {
-        // SAI: Tăng số lần sai liên tiếp
         wrongConsecutive++;
         if (wrongConsecutive >= 5) {
-            timeLeft = Math.max(0, timeLeft - 10); // Trừ 10 giây
-            wrongConsecutive = 0; // Reset sau khi đã phạt
-            showPenaltyEffect(); // Hiệu ứng đỏ màn hình nếu muốn
+            timeLeft = Math.max(0, timeLeft - 10); // Phạt trừ 10 giây
+            wrongConsecutive = 0; // Reset sau khi phạt
+            if(timerDisplay) {
+                timerDisplay.classList.add('penalty'); // Hiệu ứng đỏ (nếu có CSS)
+                setTimeout(() => timerDisplay.classList.remove('penalty'), 500);
+            }
         }
-        
         updateDisplay();
         setTimeout(() => {
             card1.classList.remove('flipped');
@@ -96,15 +95,6 @@ function checkMatch() {
             flippedCards = [];
         }, 1000);
     }
-}
-
-function showPenaltyEffect() {
-    timerDisplay.style.fontSize = "40px";
-    setTimeout(() => timerDisplay.style.fontSize = "28px", 500);
-}
-
-function resetGame() { initGame(); }
-initGame();
 }
 
 function resetGame() { initGame(); }
