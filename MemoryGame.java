@@ -12,11 +12,11 @@ public class MemoryGame {
     public static void main(String[] args) throws InterruptedException {
         initBoard();
         System.out.println("=== GAME LAT HINH 5x5 ===");
-        System.out.println("Ban co 10 giay de nho...");
+        System.out.println("Ban co 10 giay de nho (Hang/Cot tu 1 den 5)...");
         showAll(true);
         Thread.sleep(10000); 
         
-        clearScreen(); // Xoa bang xem truoc
+        clearScreen();
         showAll(false);
 
         while (!isGameOver()) {
@@ -40,11 +40,12 @@ public class MemoryGame {
         }
     }
 
+    // SUA O DAY: Hien thi hang doc tu 1 den 5
     public static void printBoard() {
-        System.out.print("\n      0    1    2    3    4");
+        System.out.print("\n      1    2    3    4    5"); // Hang ngang tu 1-5
         System.out.println("\n    -------------------------");
         for (int i = 0; i < SIZE; i++) {
-            System.out.print(i + " | ");
+            System.out.print((i + 1) + " | "); // SUA: In (i+1) de hien thi 1 den 5
             for (int j = 0; j < SIZE; j++) {
                 if (isRevealed[i][j]) System.out.printf(" [%2d]", board[i][j]);
                 else System.out.print(" [*] ");
@@ -53,7 +54,6 @@ public class MemoryGame {
         }
     }
 
-    // Ham moi: Xoa man hinh bang cach day dong trong
     public static void clearScreen() {
         for (int i = 0; i < 50; i++) System.out.println();
     }
@@ -62,7 +62,7 @@ public class MemoryGame {
         int otherPlayer = (currentPlayer == 0) ? 1 : 0;
         System.out.println("\n>> LUOT NGUOI CHOI " + (currentPlayer + 1) + " <<");
 
-        int[] c1 = getValidInput("Chon o 1 (hang cach cot): ");
+        int[] c1 = getValidInput("Chon o 1 (hang cach cot, tu 1-5): ");
         isRevealed[c1[0]][c1[1]] = true;
         printBoard();
 
@@ -72,7 +72,7 @@ public class MemoryGame {
             return;
         }
 
-        int[] c2 = getValidInput("Chon o 2 (hang cach cot): ");
+        int[] c2 = getValidInput("Chon o 2 (hang cach cot, tu 1-5): ");
         isRevealed[c2[0]][c2[1]] = true;
         printBoard();
 
@@ -83,15 +83,14 @@ public class MemoryGame {
         } else {
             System.out.println("=> SAI ROI!");
             consecutiveWrong[currentPlayer]++;
-            Thread.sleep(2000); // Cho 2 giay de nho o sai
+            Thread.sleep(2000); 
             
-            // QUAN TRONG: Up bai lai va xoa man hinh truoc khi in luot tiep theo
             isRevealed[c1[0]][c1[1]] = false;
             isRevealed[c2[0]][c2[1]] = false;
             
-            clearScreen(); // Day bảng có 2 số sai đi
+            clearScreen();
             System.out.println("--- BANG DA DUOC UP LAI CHO NGUOI TIEP THEO ---");
-            printBoard(); // In lại bảng sạch (chỉ còn các ô đã lật đúng)
+            printBoard();
 
             if (consecutiveWrong[currentPlayer] >= 2) {
                 System.out.println("!!! Nguoi choi " + (currentPlayer + 1) + " sai 2 lan lien tiep. Doi phuong duoc lat 2 lan!");
@@ -109,13 +108,15 @@ public class MemoryGame {
         }
     }
 
+    // SUA O DAY: Tru di 1 de nguoi dung nhap 1-5 thi may hieu la 0-4
     public static int[] getValidInput(String msg) {
         while (true) {
             try {
                 System.out.print(msg);
-                int r = sc.nextInt(); int c = sc.nextInt();
+                int r = sc.nextInt() - 1; // Tru 1 o day
+                int c = sc.nextInt() - 1; // Tru 1 o day
                 if (r >= 0 && r < SIZE && c >= 0 && c < SIZE && !isRevealed[r][c]) return new int[]{r, c};
-                System.out.println("Nhap lai (Toa do sai hoac o da mo)!");
+                System.out.println("Nhap lai (Toa do tu 1-5, o chua mo)!");
             } catch (Exception e) {
                 System.out.println("Chi nhap so nguyen!"); sc.next();
             }
