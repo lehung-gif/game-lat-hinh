@@ -33,12 +33,12 @@ function initGame() {
         board.appendChild(card);
     });
 
-    // 10 giây xem trước trước khi bắt đầu
+    // 20 giây xem trước trước khi bắt đầu
     setTimeout(() => {
         document.querySelectorAll('.card').forEach(card => card.classList.remove('flipped'));
         isPreviewing = false;
         startCountdown();
-    }, 10000); 
+    }, 20000); 
 }
 
 function updateDisplay() {
