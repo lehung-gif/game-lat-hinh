@@ -2,15 +2,22 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Game Lat Hinh - Web Version</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Game 8x8 - Thử Thách Thiên Tài</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>Memory Game (Web)</h1>
+        <h1>Siêu Cấp Lật Hình (8x8)</h1>
+        <p>Bạn có 10 giây để ghi nhớ 32 cặp hình!</p>
+        
         <div id="game-board" class="grid"></div>
-        <button onclick="resetGame()">Choi Lai</button>
+        
+        <div class="controls">
+            <button onclick="resetGame()">Chơi Lại</button>
+        </div>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
