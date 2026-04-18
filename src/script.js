@@ -27,11 +27,11 @@ function initGame() {
         board.appendChild(card);
     });
 
-    // 30 giây ghi nhớ
+    // 15 giây ghi nhớ
     setTimeout(() => {
         document.querySelectorAll('.card').forEach(card => card.classList.remove('flipped'));
         isPreviewing = false;
-    }, 30000); 
+    }, 15000); 
 }
 
 function flipCard() {
