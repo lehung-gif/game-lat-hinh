@@ -1,59 +1,49 @@
 const board = document.getElementById('game-board');
 let flippedCards = [];
 let matchedCount = 0;
-let isPreviewing = true; // Biến chặn không cho người chơi nhấn khi đang xem trước
+let isPreviewing = true;
 
-// Tạo 25 ô: 12 cặp (1-12) và 1 ô số 0
-const symbols = [];
-for (let i = 1; i <= 12; i++) {
-    symbols.push(i, i);
-}
-symbols.push(0); 
+// Tạo 32 cặp hình (tổng 64 ô)
+const icons = [
+    '🍎','🍌','🍇','🍓','🥑','🍉','🍊','🍍',
+    '🐱','🐶','🐭','🐹','🐰','🦊','🐻','🐼',
+    '🚗','🚀','✈️','🚢','🚲','🛵','🚁','🚜',
+    '⚽','🏀','🎾','🏐','🎱','⛳','🥊','🏹'
+];
+const symbols = [...icons, ...icons]; // Nhân đôi để tạo cặp
 
 function initGame() {
     board.innerHTML = '';
     flippedCards = [];
     matchedCount = 0;
-    isPreviewing = true; 
+    isPreviewing = true;
     
-    // Trộn ngẫu nhiên
+    // Trộn bài cực kỹ
     symbols.sort(() => Math.random() - 0.5);
     
     symbols.forEach((symbol) => {
         const card = document.createElement('div');
         card.classList.add('card');
-        // Mặc định lật lên để xem trước
-        card.classList.add('flipped'); 
+        card.classList.add('flipped'); // Mở lên để xem trước
         card.dataset.symbol = symbol;
         card.innerText = symbol;
         card.addEventListener('click', flipCard);
         board.appendChild(card);
     });
 
-    // Sau 10 giây thì úp hết bài lại để bắt đầu chơi
+    // 10 giây ghi nhớ cho bảng 8x8
     setTimeout(() => {
-        const allCards = document.querySelectorAll('.card');
-        allCards.forEach(card => card.classList.remove('flipped'));
-        isPreviewing = false; // Cho phép người chơi bắt đầu lật
-        alert("Het 10 giay! Bat dau choi.");
-    }, 10000); // 10000ms = 10 giây
+        document.querySelectorAll('.card').forEach(card => card.classList.remove('flipped'));
+        isPreviewing = false;
+        console.log("Bat dau!");
+    }, 10000); 
 }
 
 function flipCard() {
-    // Không cho lật nếu đang trong thời gian xem trước hoặc lật quá 2 ô
     if (isPreviewing) return;
     if (flippedCards.length < 2 && !this.classList.contains('flipped')) {
         this.classList.add('flipped');
         flippedCards.push(this);
-
-        // Logic ô số 0 (giống bản Java)
-        if (this.dataset.symbol === "0") {
-            this.classList.add('matched');
-            matchedCount++;
-            flippedCards = flippedCards.filter(c => c !== this);
-            checkWin();
-            return;
-        }
 
         if (flippedCards.length === 2) {
             checkMatch();
@@ -68,19 +58,13 @@ function checkMatch() {
         card2.classList.add('matched');
         matchedCount += 2;
         flippedCards = [];
-        checkWin();
+        if (matchedCount === 64) setTimeout(() => alert('THANG CUOC! Ban co tri nho thien tai.'), 500);
     } else {
         setTimeout(() => {
             card1.classList.remove('flipped');
             card2.classList.remove('flipped');
             flippedCards = [];
-        }, 1000);
-    }
-}
-
-function checkWin() {
-    if (matchedCount === 25) {
-        setTimeout(() => alert('Chuc mung! Ban da thang.'), 300);
+        }, 800); // Rút ngắn thời gian úp bài để game nhanh hơn
     }
 }
 
@@ -88,5 +72,4 @@ function resetGame() {
     initGame();
 }
 
-// Khoi chay game
 initGame();
